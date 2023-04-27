@@ -12,5 +12,6 @@ module.exports = {
   // },
   rules: {
     'no-underscore-dangle': ['error', { allow: ['foo_', '_bar'] }],
-  },
+    'comma-dangle': ['error', 'never']
+  }
 };
