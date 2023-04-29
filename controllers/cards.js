@@ -5,7 +5,12 @@ const getCards = (req, res) => {
   Card.find({})
     // .populate('owner')
     .then((cards) => res.send({ cards }))
-    .catch((err) => res.status(500).send({ message: `Произошла ошибка ${err.message}` }));
+    .catch((err) => {
+      if (err instanceof mongoose.Error.DocumentNotFoundError || mongoose.Error.CastError) {
+        res.status(400).send({ message: 'Карточка или пользователь не найден' });
+      }
+      res.status(500).send({ message: `Произошла ошибка ${err.message}` });
+    });
 };
 
 const createCard = (req, res) => {
@@ -29,7 +34,7 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
     .then((card) => res.send({ card }))
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError) {
+      if (err instanceof mongoose.Error.DocumentNotFoundError || mongoose.Error.CastError) {
         res.status(400).send({ message: 'Карточка или пользователь не найден' });
       }
       res.status(500).send({ message: `Произошла ошибка ${err.message}` });
@@ -44,7 +49,7 @@ const addLike = (req, res) => {
   )
     .then((card) => res.send({ card }))
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError) {
+      if (err instanceof mongoose.Error.DocumentNotFoundError || mongoose.Error.CastError) {
         res.status(400).send({ message: 'Карточка или пользователь не найден' });
       }
       res.status(500).send({ message: `Произошла ошибка ${err.message}` });
@@ -59,7 +64,7 @@ const removeLike = (req, res) => {
   )
     .then((card) => res.send({ card }))
     .catch((err) => {
-      if (err instanceof mongoose.Error.DocumentNotFoundError) {
+      if (err instanceof mongoose.Error.DocumentNotFoundError || mongoose.Error.CastError) {
         res.status(400).send({ message: 'Карточка или пользователь не найден' });
       }
       res.status(500).send({ message: `Произошла ошибка ${err.message}` });
