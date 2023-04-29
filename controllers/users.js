@@ -1,16 +1,29 @@
 const mongoose = require('mongoose');
 const User = require('../models/user');
 
+class GroupErrors extends Error {}
+class NotFoundError extends GroupErrors {
+  constructor(message) {
+    super(message);
+    this.name = 'NotFoundError';
+    this.statusCode = 404;
+  }
+}
+
 const handleErrors = (err, res) => {
+  if (err instanceof GroupErrors) {
+    res.status(err.statusCode).send({ message: err.message });
+    return;
+  }
   if (err instanceof mongoose.Error.ValidationError || mongoose.Error.CastError) {
     res.status(400).send({ message: 'переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
     return;
   }
-  if (err instanceof mongoose.Error.DocumentNotFoundError) {
+  if (err instanceof mongoose.Error.DocumentNotFoundError || NotFoundError) {
     res.status(404).send({ message: 'карточка или пользователь не найден' });
     return;
   }
-  res.status(500).send({ message: `Произошла ошибка ${err.message}` });
+  res.status(500).send({ message: `Произошла ошибка --- ${err}` });
 };
 
 const getUsers = (req, res) => {
@@ -27,7 +40,12 @@ const getUsers = (req, res) => {
 
 const getUserById = (req, res) => {
   User.findById(req.params.id)
-    .then((user) => res.send({ user }))
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new NotFoundError('пользователь не найден'));
+      }
+      return res.send({ user });
+    })
     .catch((err) => {
       handleErrors(err, res);
       // if (err instanceof mongoose.Error.DocumentNotFoundError || mongoose.Error.CastError) {
@@ -63,6 +81,7 @@ const updateAvatar = (req, res) => {
 };
 
 module.exports = {
+  handleErrors,
   getUsers,
   getUserById,
   createUser,

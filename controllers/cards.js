@@ -1,17 +1,5 @@
-const mongoose = require('mongoose');
 const Card = require('../models/card');
-
-const handleErrors = (err, res) => {
-  if (err instanceof mongoose.Error.ValidationError || mongoose.Error.CastError) {
-    res.status(400).send({ message: 'переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
-    return;
-  }
-  if (err instanceof mongoose.Error.DocumentNotFoundError) {
-    res.status(404).send({ message: 'карточка или пользователь не найден' });
-    return;
-  }
-  res.status(500).send({ message: `Произошла ошибка ${err.message}` });
-};
+const { handleErrors } = require('./users');
 
 const getCards = (req, res) => {
   Card.find({})
