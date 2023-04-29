@@ -29,9 +29,6 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
     .then((card) => res.send({ card }))
     .catch((err) => {
-      // if (err instanceof mongoose.Error.ValidationError) {
-      //   res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
-      // }
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
         res.status(400).send({ message: 'Карточка или пользователь не найден' });
       }
@@ -47,9 +44,6 @@ const addLike = (req, res) => {
   )
     .then((card) => res.send({ card }))
     .catch((err) => {
-      // if (err instanceof mongoose.Error.ValidationError) {
-      //   res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
-      // }
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
         res.status(400).send({ message: 'Карточка или пользователь не найден' });
       }
@@ -65,9 +59,6 @@ const removeLike = (req, res) => {
   )
     .then((card) => res.send({ card }))
     .catch((err) => {
-      // if (err instanceof mongoose.Error.ValidationError) {
-      //   res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
-      // }
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
         res.status(400).send({ message: 'Карточка или пользователь не найден' });
       }

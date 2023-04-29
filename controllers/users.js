@@ -11,9 +11,6 @@ const getUserById = (req, res) => {
   User.findById(req.params.id)
     .then((user) => res.send({ user }))
     .catch((err) => {
-      // if (err instanceof mongoose.Error.ValidationError) {
-      //   res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
-      // }
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
         res.status(400).send({ message: 'Карточка или пользователь не найден' });
       }
@@ -30,9 +27,6 @@ const createUser = (req, res) => {
       if (err instanceof mongoose.Error.ValidationError) {
         res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
       }
-      // if (err instanceof mongoose.Error.DocumentNotFoundError) {
-      //   res.status(400).send({ message: 'Карточка или пользователь не найден' });
-      // }
       res.status(500).send({ message: `Произошла ошибка ${err.message}` });
     });
 };
