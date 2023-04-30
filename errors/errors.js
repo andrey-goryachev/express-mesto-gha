@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 
-class GroupErrors extends Error {}
-
-class NotFoundError extends GroupErrors {
+class NotFoundError extends Error {
   constructor(message) {
     super(message);
     this.name = 'NotFoundError';
