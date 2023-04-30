@@ -1,43 +1,10 @@
-// const mongoose = require('mongoose');
 const User = require('../models/user');
 const { handleErrors, NotFoundError } = require('../errors/errors');
-
-// class GroupErrors extends Error {}
-// class NotFoundError extends GroupErrors {
-//   constructor(message) {
-//     super(message);
-//     this.name = 'NotFoundError';
-//     this.statusCode = 404;
-//   }
-// }
-
-// const handleErrors = (err, res) => {
-//   if (err instanceof GroupErrors) {
-//     res.status(err.statusCode).send({ message: err.message });
-//     return;
-//   }
-//   if (err instanceof mongoose.Error.ValidationError || mongoose.Error.CastError) {
-//     res.status(400).send({ message: 'переданы некорректные данные в методы создания карточки,
-// пользователя, обновления аватара пользователя или профиля' });
-//     return;
-//   }
-//   if (err instanceof mongoose.Error.DocumentNotFoundError) {
-//     res.status(404).send({ message: 'карточка или пользователь не найден' });
-//     return;
-//   }
-//   res.status(500).send({ message: `Произошла ошибка --- ${err}` });
-// };
 
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ users }))
-    .catch((err) => {
-      handleErrors(err, res);
-      // if (err instanceof mongoose.Error.DocumentNotFoundError || mongoose.Error.CastError) {
-      //   res.status(400).send({ message: 'Карточка или пользователь не найден' });
-      // }
-      // res.status(500).send({ message: `Произошла ошибка ${err.message}` });
-    });
+    .catch((err) => handleErrors(err, res));
 };
 
 const getUserById = (req, res) => {
@@ -48,13 +15,7 @@ const getUserById = (req, res) => {
       }
       return res.send({ user });
     })
-    .catch((err) => {
-      handleErrors(err, res);
-      // if (err instanceof mongoose.Error.DocumentNotFoundError || mongoose.Error.CastError) {
-      //   res.status(400).send({ message: 'Карточка или пользователь не найден' });
-      // }
-      // res.status(500).send({ message: `Произошла ошибка ${err.message}` });
-    });
+    .catch((err) => handleErrors(err, res));
 };
 
 const createUser = (req, res) => {
@@ -67,9 +28,9 @@ const createUser = (req, res) => {
 
 const updateProfile = (req, res) => {
   User.findByIdAndUpdate(req.user._id, req.body, {
-    new: true, // обработчик then получит на вход обновлённую запись
-    runValidators: true, // данные будут валидированы перед изменением
-    upsert: true // если пользователь не найден, он будет создан
+    new: true,
+    runValidators: true,
+    upsert: true
   })
     .then((user) => res.send({ user }))
     .catch((err) => handleErrors(err, res));
