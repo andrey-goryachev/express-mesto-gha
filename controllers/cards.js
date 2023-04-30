@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const { handleErrors } = require('./users');
+const { handleErrors, NotFoundError } = require('../errors/errors');
 
 const getCards = (req, res) => {
   Card.find({})
@@ -29,7 +29,12 @@ const addLike = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true }
   )
-    .then((card) => res.send({ card }))
+    .then((card) => {
+      if (!card) {
+        return Promise.reject(new NotFoundError('карточка не найдена'));
+      }
+      return res.send({ card });
+    })
     .catch((err) => handleErrors(err, res));
 };
 
@@ -39,7 +44,12 @@ const removeLike = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива, если он там есть
     { new: true }
   )
-    .then((card) => res.send({ card }))
+    .then((card) => {
+      if (!card) {
+        return Promise.reject(new NotFoundError('карточка не найдена'));
+      }
+      return res.send({ card });
+    })
     .catch((err) => handleErrors(err, res));
 };
 

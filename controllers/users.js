@@ -1,30 +1,32 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const User = require('../models/user');
+const { handleErrors, NotFoundError } = require('../errors/errors');
 
-class GroupErrors extends Error {}
-class NotFoundError extends GroupErrors {
-  constructor(message) {
-    super(message);
-    this.name = 'NotFoundError';
-    this.statusCode = 404;
-  }
-}
+// class GroupErrors extends Error {}
+// class NotFoundError extends GroupErrors {
+//   constructor(message) {
+//     super(message);
+//     this.name = 'NotFoundError';
+//     this.statusCode = 404;
+//   }
+// }
 
-const handleErrors = (err, res) => {
-  if (err instanceof GroupErrors) {
-    res.status(err.statusCode).send({ message: err.message });
-    return;
-  }
-  if (err instanceof mongoose.Error.ValidationError || mongoose.Error.CastError) {
-    res.status(400).send({ message: 'переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
-    return;
-  }
-  if (err instanceof mongoose.Error.DocumentNotFoundError || NotFoundError) {
-    res.status(404).send({ message: 'карточка или пользователь не найден' });
-    return;
-  }
-  res.status(500).send({ message: `Произошла ошибка --- ${err}` });
-};
+// const handleErrors = (err, res) => {
+//   if (err instanceof GroupErrors) {
+//     res.status(err.statusCode).send({ message: err.message });
+//     return;
+//   }
+//   if (err instanceof mongoose.Error.ValidationError || mongoose.Error.CastError) {
+//     res.status(400).send({ message: 'переданы некорректные данные в методы создания карточки,
+// пользователя, обновления аватара пользователя или профиля' });
+//     return;
+//   }
+//   if (err instanceof mongoose.Error.DocumentNotFoundError) {
+//     res.status(404).send({ message: 'карточка или пользователь не найден' });
+//     return;
+//   }
+//   res.status(500).send({ message: `Произошла ошибка --- ${err}` });
+// };
 
 const getUsers = (req, res) => {
   User.find({})
@@ -82,6 +84,8 @@ const updateAvatar = (req, res) => {
 
 module.exports = {
   handleErrors,
+  NotFoundError,
+
   getUsers,
   getUserById,
   createUser,
