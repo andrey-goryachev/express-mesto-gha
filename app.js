@@ -24,6 +24,10 @@ app.use('/cards', require('./routes/cards'));
 
 // TODO: осталось обработать неправильные маршруты
 app.get('*', (req, res) => Promise.reject(new NotFoundError('такой страницы не существует')).catch((err) => handleErrors(err, res)));
+app.post('*', (req, res) => Promise.reject(new NotFoundError('такой страницы не существует')).catch((err) => handleErrors(err, res)));
+app.put('*', (req, res) => Promise.reject(new NotFoundError('такой страницы не существует')).catch((err) => handleErrors(err, res)));
+app.patch('*', (req, res) => Promise.reject(new NotFoundError('такой страницы не существует')).catch((err) => handleErrors(err, res)));
+app.delete('*', (req, res) => Promise.reject(new NotFoundError('такой страницы не существует')).catch((err) => handleErrors(err, res)));
 
 app.listen(PORT, () => {
   console.log(`Приложение запущено, порт ${PORT}`);
