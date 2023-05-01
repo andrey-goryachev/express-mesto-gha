@@ -1,27 +1,26 @@
 const mongoose = require('mongoose');
 
+const INCORRECT_ERROR_CODE = 400;
+const NOT_FOUND_CODE = 404;
+const DEFAULT_ERROR_CODE = 500;
+
 class NotFoundError extends Error {
   constructor(message) {
     super(message);
     this.name = 'NotFoundError';
-    this.statusCode = 404;
   }
 }
 
 const handleErrors = (err, res) => {
   if (err instanceof NotFoundError) {
-    res.status(err.statusCode).send({ message: err.message });
+    res.status(NOT_FOUND_CODE).send({ message: err.message });
     return;
   }
-  if (err instanceof mongoose.Error.ValidationError || mongoose.Error.CastError) {
-    res.status(400).send({ message: 'переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
+  if (err instanceof mongoose.Error.ValidationError || err instanceof mongoose.Error.CastError) {
+    res.status(INCORRECT_ERROR_CODE).send({ message: 'переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
     return;
   }
-  if (err instanceof mongoose.Error.DocumentNotFoundError) {
-    res.status(404).send({ message: 'карточка или пользователь не найден' });
-    return;
-  }
-  res.status(500).send({ message: `Произошла ошибка --- ${err}` });
+  res.status(DEFAULT_ERROR_CODE).send({ message: `Произошла ошибка --- ${err}` });
 };
 
 module.exports = { handleErrors, NotFoundError };
