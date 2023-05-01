@@ -22,34 +22,28 @@ const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.send({ user }))
+    .then((user) => res.status(201).send({ user }))
     .catch((err) => handleErrors(err, res));
 };
 
 const updateProfile = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, req.body, {
-    new: true,
-    runValidators: true,
-    upsert: true
-  })
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => res.send({ user }))
     .catch((err) => handleErrors(err, res));
 };
 
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => res.send({ user }))
     .catch((err) => handleErrors(err, res));
 };
 
 module.exports = {
-  handleErrors,
-  NotFoundError,
-
   getUsers,
   getUserById,
   createUser,
   updateProfile,
-  updateAvatar
+  updateAvatar,
 };

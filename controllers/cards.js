@@ -4,6 +4,7 @@ const { handleErrors, NotFoundError } = require('../errors/errors');
 const getCards = (req, res) => {
   Card.find({})
     .populate('owner')
+    .populate('likes')
     .then((cards) => res.send({ cards }))
     .catch((err) => handleErrors(err, res));
 };
@@ -32,7 +33,7 @@ const addLike = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
     .then((card) => {
       if (!card) {
@@ -47,7 +48,7 @@ const removeLike = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
     .then((card) => {
       if (!card) {
@@ -63,5 +64,5 @@ module.exports = {
   createCard,
   deleteCard,
   addLike,
-  removeLike
+  removeLike,
 };

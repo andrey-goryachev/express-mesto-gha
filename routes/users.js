@@ -3,7 +3,7 @@ const {
   getUsers,
   getUserById,
   createUser,
-  updateProfile
+  updateProfile,
 } = require('../controllers/users');
 
 router.get('/', getUsers);

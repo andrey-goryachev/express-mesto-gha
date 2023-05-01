@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const INCORRECT_ERROR_CODE = 400;
+const INCORRECT_DATA_ERROR_CODE = 400;
 const NOT_FOUND_CODE = 404;
 const DEFAULT_ERROR_CODE = 500;
 
@@ -17,7 +17,7 @@ const handleErrors = (err, res) => {
     return;
   }
   if (err instanceof mongoose.Error.ValidationError || err instanceof mongoose.Error.CastError) {
-    res.status(INCORRECT_ERROR_CODE).send({ message: 'переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
+    res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля' });
     return;
   }
   res.status(DEFAULT_ERROR_CODE).send({ message: `Произошла ошибка --- ${err}` });
