@@ -4,6 +4,6 @@ module.exports = {
     // это правило по заданию
     'no-underscore-dangle': ['error', { allow: ['_id'] }],
     // это правило отключает предупреждение, иначе тесты не проходят
-    'no-console': 'off',
+    // 'no-console': 'off',
   },
 };
