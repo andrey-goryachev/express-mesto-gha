@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { handleErrors, NotFoundError } = require('../errors/errors');
 
@@ -19,6 +20,8 @@ const getUserById = (req, res) => {
     .catch((err) => handleErrors(err, res));
 };
 
+// TODO: можно создать много пользователей с одинаковой почтой, надо понять так должно быть
+// или исправлять?
 const createUser = (req, res) => {
   const {
     name, about, avatar, email, password,
@@ -45,10 +48,22 @@ const updateAvatar = (req, res) => {
     .catch((err) => handleErrors(err, res));
 };
 
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'asdfgfjlAsdfweofuheo1rffwe!!asd,', { expiresIn: '7d' });
+      res.status(200).send({ token });
+    })
+    .catch((err) => handleErrors(err, res));
+};
+
 module.exports = {
   getUsers,
   getUserById,
   createUser,
   updateProfile,
   updateAvatar,
+  login,
 };
