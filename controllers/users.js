@@ -53,6 +53,7 @@ const login = (req, res) => {
 
   User.findUserByCredentials(email, password)
     .then((user) => {
+      // TODO: вынести секретный ключ в окружение
       const token = jwt.sign({ _id: user._id }, 'asdfgfjlAsdfweofuheo1rffwe!!asd,', { expiresIn: '7d' });
       res.status(200).send({ token });
     })
