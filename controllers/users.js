@@ -9,6 +9,18 @@ const getUsers = (req, res) => {
     .catch((err) => handleErrors(err, res));
 };
 
+const getCurrentUser = (req, res) => {
+  const userId = req.user._id;
+  User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new NotFoundError('пользователь не найден'));
+      }
+      return res.status(200).send({ user });
+    })
+    .catch((err) => handleErrors(err, res));
+};
+
 const getUserById = (req, res) => {
   User.findById(req.params.id)
     .then((user) => {
@@ -67,4 +79,5 @@ module.exports = {
   updateProfile,
   updateAvatar,
   login,
+  getCurrentUser,
 };
