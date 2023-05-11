@@ -19,7 +19,9 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.id)
+  const owner = req.user._id;
+  const cardId = req.params.id;
+  Card.findOneAndRemove({ _id: cardId, owner })
     .then((card) => {
       if (!card) {
         return Promise.reject(new NotFoundError('карточка не найдена'));
