@@ -1,64 +1,49 @@
 const Card = require('../models/card');
-const { handleErrors, NotFoundError } = require('../errors/errors');
+const { NotFoundError } = require('../errors/errors');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .populate('owner')
     .populate('likes')
     .then((cards) => res.send({ cards }))
-    .catch((err) => handleErrors(err, res));
+    .catch(next);
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
 
   Card.create({ name, link, owner })
-    .then((card) => res.send({ card }))
-    .catch((err) => handleErrors(err, res));
+    .then((card) => res.status(201).send({ card }))
+    .catch(next);
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const owner = req.user._id;
   const cardId = req.params.id;
   Card.findOneAndRemove({ _id: cardId, owner })
-    .then((card) => {
-      if (!card) {
-        return Promise.reject(new NotFoundError('карточка не найдена'));
-      }
-      return res.send({ card });
-    })
-    .catch((err) => handleErrors(err, res));
+    .then((card) => res.send({ card }))
+    .catch(next);
 };
 
-const addLike = (req, res) => {
+const addLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
-        return Promise.reject(new NotFoundError('карточка не найдена'));
-      }
-      return res.send({ card });
-    })
-    .catch((err) => handleErrors(err, res));
+    .then((card) => res.send({ card }))
+    .catch(() => next(new NotFoundError('Карточка не найдена')));
 };
 
-const removeLike = (req, res) => {
+const removeLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
-        return Promise.reject(new NotFoundError('карточка не найдена'));
-      }
-      return res.send({ card });
-    })
-    .catch((err) => handleErrors(err, res));
+    .then((card) => res.send({ card }))
+    .catch(() => next(new NotFoundError('Карточка не найдена')));
 };
 
 module.exports = {

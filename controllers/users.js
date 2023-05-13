@@ -1,40 +1,28 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { handleErrors, NotFoundError } = require('../errors/errors');
+const { NotFoundError } = require('../errors/errors');
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ users }))
-    .catch((err) => handleErrors(err, res));
+    .catch(next);
 };
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   const userId = req.user._id;
   User.findById(userId)
-    .then((user) => {
-      if (!user) {
-        return Promise.reject(new NotFoundError('пользователь не найден'));
-      }
-      return res.status(200).send({ user });
-    })
-    .catch((err) => handleErrors(err, res));
+    .then((user) => res.send({ user }))
+    .catch(next);
 };
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   User.findById(req.params.id)
-    .then((user) => {
-      if (!user) {
-        return Promise.reject(new NotFoundError('пользователь не найден'));
-      }
-      return res.send({ user });
-    })
-    .catch((err) => handleErrors(err, res));
+    .then((user) => res.send({ user }))
+    .catch(() => next(new NotFoundError('Нет пользователя с таким id')));
 };
 
-// TODO: можно создать много пользователей с одинаковой почтой, надо понять так должно быть
-// или исправлять?
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -43,33 +31,32 @@ const createUser = (req, res) => {
       name, about, avatar, email, password: hash,
     }))
     .then((user) => res.status(201).send({ user }))
-    .catch((err) => handleErrors(err, res));
+    .catch(next);
 };
 
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => res.send({ user }))
-    .catch((err) => handleErrors(err, res));
+    .catch(next);
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => res.send({ user }))
-    .catch((err) => handleErrors(err, res));
+    .catch(next);
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
-
   User.findUserByCredentials(email, password)
     .then((user) => {
       // TODO: вынести секретный ключ в окружение
       const token = jwt.sign({ _id: user._id }, 'asdfgfjlAsdfweofuheo1rffwe!!asd,', { expiresIn: '7d' });
-      res.status(200).send({ token });
+      res.send({ token });
     })
-    .catch((err) => handleErrors(err, res));
+    .catch(next);
 };
 
 module.exports = {
