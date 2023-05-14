@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(router);
 
 // noinspection JSCheckFunctionSignatures
-app.use(errors());
+app.use(errors({ statusCode: 404 }));
 app.use(handleErrors);
 
 app.listen(PORT, () => {
