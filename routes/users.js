@@ -24,7 +24,7 @@ router.post('/signup', celebrate({
   [Segments.BODY]: Joi.object().keys({
     email: Joi.string().required(),
     password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
+    name: Joi.string(),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string(),
   }),
