@@ -4,31 +4,31 @@ const auth = require('../middlewares/auth');
 const {
   getUsers,
   getUserById,
-  createUser,
+  // createUser,
   updateProfile,
   updateAvatar,
-  login,
+  // login,
   getCurrentUser,
 } = require('../controllers/users');
 
 // router.post('/signin', login);
 
-router.post('/signin', celebrate({
-  [Segments.BODY]: Joi.object().keys({
-    email: Joi.string().required(),
-    password: Joi.string().required(),
-  }),
-}), login);
-
-router.post('/signup', celebrate({
-  [Segments.BODY]: Joi.object().keys({
-    email: Joi.string().required(),
-    password: Joi.string().required(),
-    name: Joi.string(),
-    about: Joi.string(),
-    avatar: Joi.string(),
-  }),
-}), createUser);
+// router.post('/signin', celebrate({
+//   [Segments.BODY]: Joi.object().keys({
+//     email: Joi.string().required(),
+//     password: Joi.string().required(),
+//   }),
+// }), login);
+//
+// router.post('/signup', celebrate({
+//   [Segments.BODY]: Joi.object().keys({
+//     email: Joi.string().required(),
+//     password: Joi.string().required(),
+//     name: Joi.string(),
+//     about: Joi.string(),
+//     avatar: Joi.string(),
+//   }),
+// }), createUser);
 
 router.get('/me', auth, getCurrentUser);
 
@@ -50,6 +50,7 @@ router.get('/:id', auth, celebrate({
     id: Joi.string().required(),
   }),
 }), getUserById);
+
 router.get('/', auth, getUsers);
 
 module.exports = router;
