@@ -14,7 +14,8 @@ app.use(express.json());
 app.use(router);
 
 // noinspection JSCheckFunctionSignatures
-app.use(errors({ statusCode: 404 }));
+app.use(errors({ statusCode: 404, message: 'Ошибка валидации' }));
+// app.use(errors(next(err)));
 app.use(handleErrors);
 
 app.listen(PORT, () => {
