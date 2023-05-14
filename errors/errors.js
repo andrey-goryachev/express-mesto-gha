@@ -3,11 +3,18 @@ const mongoose = require('mongoose');
 
 const INCORRECT_DATA_ERROR_CODE = 400;
 const NOT_AUTH_ERROR_CODE = 401;
+const NOT_OWNER_ENTITY_ERROR_CODE = 403;
 const NOT_FOUND_CODE = 404;
 const ALREADY_EXISTS_CODE = 409;
 const DEFAULT_ERROR_CODE = 500;
 
-class NotFoundError extends Error {
+class CustomError extends Error {
+  // eslint-disable-next-line no-useless-constructor
+  constructor(message) {
+    super(message);
+  }
+}
+class NotFoundError extends CustomError {
   constructor(message) {
     super(message);
     // this.name = 'NotFoundError';
@@ -15,19 +22,22 @@ class NotFoundError extends Error {
   }
 }
 
-class NotAuthError extends Error {
+class NotAuthError extends CustomError {
   constructor(message) {
     super(message);
     this.statusCode = NOT_AUTH_ERROR_CODE;
   }
 }
 
-const handleErrors = (err, req, res, next) => {
-  if (err instanceof NotFoundError) {
-    res.status(err.statusCode).send({ message: err.message });
-    return;
+class NotOwnerEntityError extends CustomError {
+  constructor(message) {
+    super(message);
+    this.statusCode = NOT_OWNER_ENTITY_ERROR_CODE;
   }
-  if (err instanceof NotAuthError) {
+}
+
+const handleErrors = (err, req, res, next) => {
+  if (err instanceof CustomError) {
     res.status(err.statusCode).send({ message: err.message });
     return;
   }
@@ -48,4 +58,5 @@ module.exports = {
   handleErrors,
   NotFoundError,
   NotAuthError,
+  NotOwnerEntityError,
 };

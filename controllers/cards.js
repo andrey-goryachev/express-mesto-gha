@@ -1,5 +1,8 @@
 const Card = require('../models/card');
-const { NotFoundError } = require('../errors/errors');
+const {
+  NotFoundError,
+  NotOwnerEntityError,
+} = require('../errors/errors');
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -23,7 +26,7 @@ const deleteCard = (req, res, next) => {
   const cardId = req.params.id;
   Card.findOneAndRemove({ _id: cardId, owner })
     .then((card) => res.send({ card }))
-    .catch(next);
+    .catch(() => next(new NotOwnerEntityError('Вы не владелец карточки')));
 };
 
 const addLike = (req, res, next) => {
