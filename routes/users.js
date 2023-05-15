@@ -41,13 +41,13 @@ router.patch('/me', auth, celebrate({
 
 router.patch('/me/avatar', auth, celebrate({
   [Segments.BODY]: Joi.object().keys({
-    avatar: Joi.string(),
+    avatar: Joi.string().regex(/^(https?|ftp):\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&\/=]*$/),
   }),
 }), updateAvatar);
 
 router.get('/:id', auth, celebrate({
   [Segments.PARAMS]: Joi.object().keys({
-    id: Joi.string().required(),
+    id: Joi.string().required().min(20),
   }),
 }), getUserById);
 

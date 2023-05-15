@@ -25,7 +25,12 @@ const deleteCard = (req, res, next) => {
   const owner = req.user._id;
   const cardId = req.params.id;
   Card.findOneAndRemove({ _id: cardId, owner })
-    .then((card) => res.send({ card }))
+    .then((card) => {
+      if (!card) {
+        throw new NotOwnerEntityError('Вы не владелец карточки');
+      }
+      res.send({ card });
+    })
     .catch(() => next(new NotOwnerEntityError('Вы не владелец карточки')));
 };
 
@@ -35,7 +40,12 @@ const addLike = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send({ card }))
+    .then((card) => {
+      if (!card) {
+        throw new NotFoundError('Карточка не найдена');
+      }
+      res.send({ card });
+    })
     .catch(() => next(new NotFoundError('Карточка не найдена')));
 };
 
@@ -45,7 +55,12 @@ const removeLike = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send({ card }))
+    .then((card) => {
+      if (!card) {
+        throw new NotFoundError('Карточка не найдена');
+      }
+      res.send({ card });
+    })
     .catch(() => next(new NotFoundError('Карточка не найдена')));
 };
 
