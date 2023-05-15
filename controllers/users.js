@@ -1,7 +1,11 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { NotFoundError } = require('../errors/errors');
+const {
+  NotFoundError,
+  NotAuthError,
+} = require('../errors/errors');
+const { secretKey } = require('../data');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -52,11 +56,10 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
-      // TODO: вынести секретный ключ в окружение
-      const token = jwt.sign({ _id: user._id }, 'asdfgfjlAsdfweofuheo1rffwe!!asd,', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, secretKey, { expiresIn: '7d' });
       res.send({ token });
     })
-    .catch(next);
+    .catch(() => next(new NotAuthError('Неверный логин или пароль')));
 };
 
 module.exports = {
