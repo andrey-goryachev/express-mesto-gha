@@ -15,19 +15,18 @@ const getCards = (req, res, next) => {
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
-
   Card.create({ name, link, owner })
     .then((card) => res.status(201).send({ card }))
     .catch(next);
 };
 
 const deleteCard = (req, res, next) => {
-  const owner = req.user._id;
+  const ownerId = req.user._id;
   const cardId = req.params.id;
-  Card.findOneAndRemove({ _id: cardId, owner })
+  Card.findOneAndRemove({ _id: cardId, owner: { _id: ownerId } })
     .then((card) => {
       if (!card) {
-        throw new NotOwnerEntityError('Вы не владелец карточки');
+        throw new NotFoundError('Такой карточки нет');
       }
       res.send({ card });
     })
