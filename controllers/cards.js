@@ -21,16 +21,20 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  const ownerId = req.user._id;
   const cardId = req.params.id;
-  Card.findOneAndRemove({ _id: cardId, owner: { _id: ownerId } })
-    .then((card) => {
-      if (!card) {
-        throw new NotFoundError('Такой карточки нет');
-      }
-      res.send({ card });
+  Card.findById(cardId)
+    .orFail(() => {
+      throw new NotFoundError('Такой карточки нет');
     })
-    .catch(() => next(new NotOwnerEntityError('Вы не владелец карточки')));
+    .then((card) => {
+      if (card.owner._id.valueOf() !== req.user._id) {
+        throw new NotOwnerEntityError('Вы не владелец карточки');
+      }
+      Card.findByIdAndRemove(cardId, { new: true })
+        .then((deletedCard) => res.send(deletedCard));
+      // res.send(card)
+    })
+    .catch(next);
 };
 
 const addLike = (req, res, next) => {
