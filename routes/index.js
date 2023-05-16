@@ -14,20 +14,38 @@ const {
 
 router.post('/signin', celebrate({
   [Segments.BODY]: Joi.object().keys({
-    email: Joi.string().email().required().min(2)
+    email: Joi.string()
+      .email()
+      .required()
+      .min(2)
       .max(30),
-    password: Joi.string().required().min(2).max(30),
+    password: Joi.string()
+      .required()
+      .min(2)
+      .max(30),
   }),
 }), login);
 
 router.post('/signup', celebrate({
   [Segments.BODY]: Joi.object().keys({
-    email: Joi.string().email().required().min(2)
+    about: Joi.string()
+      .min(2)
       .max(30),
-    password: Joi.string().required().min(2).max(30),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(/^(https?|ftp):\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&\/=]*$/),
+    avatar: Joi.string()
+      .regex(/^(https?|ftp):\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&\/=]*$/),
+    email: Joi
+      .string()
+      .email()
+      .required()
+      .min(2)
+      .max(30),
+    name: Joi.string()
+      .min(2)
+      .max(30),
+    password: Joi.string()
+      .required()
+      .min(2)
+      .max(30),
   }).unknown(true),
 }), createUser);
 router.use('/users', userRouter);

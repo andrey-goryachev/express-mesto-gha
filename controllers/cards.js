@@ -32,7 +32,6 @@ const deleteCard = (req, res, next) => {
       }
       Card.findByIdAndRemove(cardId, { new: true })
         .then((deletedCard) => res.send(deletedCard));
-      // res.send(card)
     })
     .catch(next);
 };

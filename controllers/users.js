@@ -5,7 +5,7 @@ const {
   NotFoundError,
   NotAuthError,
 } = require('../errors/errors');
-const { secretKey } = require('../data');
+const { secretKey } = require('../config');
 
 const getUsers = (req, res, next) => {
   User.find({})

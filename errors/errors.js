@@ -17,7 +17,6 @@ class CustomError extends Error {
 class NotFoundError extends CustomError {
   constructor(message) {
     super(message);
-    // this.name = 'NotFoundError';
     this.statusCode = NOT_FOUND_CODE;
   }
 }
@@ -41,10 +40,6 @@ const handleErrors = (err, req, res, next) => {
     res.status(err.statusCode).send({ message: err.message });
     return;
   }
-  // if (err instanceof mongoose.Error.DocumentNotFoundError) {
-  //   res.status(NOT_FOUND_CODE).send({ message: err.message });
-  //   return;
-  // }
   if (err instanceof mongoose.Error.ValidationError || err instanceof mongoose.Error.CastError) {
     res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные в методы создания, удаления карточки, пользователя, обновления аватара пользователя или профиля' });
     return;

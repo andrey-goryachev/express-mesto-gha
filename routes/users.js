@@ -4,50 +4,36 @@ const auth = require('../middlewares/auth');
 const {
   getUsers,
   getUserById,
-  // createUser,
   updateProfile,
   updateAvatar,
-  // login,
   getCurrentUser,
 } = require('../controllers/users');
-
-// router.post('/signin', login);
-
-// router.post('/signin', celebrate({
-//   [Segments.BODY]: Joi.object().keys({
-//     email: Joi.string().required(),
-//     password: Joi.string().required(),
-//   }),
-// }), login);
-//
-// router.post('/signup', celebrate({
-//   [Segments.BODY]: Joi.object().keys({
-//     email: Joi.string().required(),
-//     password: Joi.string().required(),
-//     name: Joi.string(),
-//     about: Joi.string(),
-//     avatar: Joi.string(),
-//   }),
-// }), createUser);
 
 router.get('/me', auth, getCurrentUser);
 
 router.patch('/me', auth, celebrate({
   [Segments.BODY]: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+    about: Joi.string()
+      .min(2)
+      .max(30),
+    name: Joi.string()
+      .min(2)
+      .max(30),
   }),
 }), updateProfile);
 
 router.patch('/me/avatar', auth, celebrate({
   [Segments.BODY]: Joi.object().keys({
-    avatar: Joi.string().regex(/^(https?|ftp):\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&\/=]*$/),
+    avatar: Joi.string()
+      .regex(/^(https?|ftp):\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&\/=]*$/),
   }),
 }), updateAvatar);
 
 router.get('/:id', auth, celebrate({
   [Segments.PARAMS]: Joi.object().keys({
-    id: Joi.string().required().min(20),
+    id: Joi.string()
+      .required()
+      .min(20),
   }),
 }), getUserById);
 
