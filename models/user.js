@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const { linkRegExp } = require('../config');
+const { NotAuthError } = require('../errors/errors');
 
 const userSchema = new mongoose.Schema(
   {
@@ -21,7 +23,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       validate: {
         validator(v) {
-          return /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/gmi.test(v);
+          return linkRegExp.test(v);
         },
       },
     },
@@ -50,12 +52,12 @@ userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.error('Неправильные почта или пароль');
+        return Promise.reject(new NotAuthError('Неправильные почта или пароль'));
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new Error('Неправильные почта или пароль'));
+            return Promise.reject(new NotAuthError('Неправильные почта или пароль'));
           }
           return user;
         });
