@@ -46,7 +46,7 @@ router.post('/signup', celebrate({
       .required()
       .min(2)
       .max(30),
-  }).unknown(true),
+  }),
 }), createUser);
 router.use('/users', userRouter);
 router.use('/cards', cardRouter);

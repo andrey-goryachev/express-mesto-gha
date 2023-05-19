@@ -8,15 +8,18 @@ const {
   updateAvatar,
   getCurrentUser,
 } = require('../controllers/users');
+const { linkRegExp } = require('../config');
 
 router.get('/me', auth, getCurrentUser);
 
 router.patch('/me', auth, celebrate({
   [Segments.BODY]: Joi.object().keys({
     about: Joi.string()
+      .required()
       .min(2)
       .max(30),
     name: Joi.string()
+      .required()
       .min(2)
       .max(30),
   }),
@@ -25,15 +28,16 @@ router.patch('/me', auth, celebrate({
 router.patch('/me/avatar', auth, celebrate({
   [Segments.BODY]: Joi.object().keys({
     avatar: Joi.string()
-      .regex(/^(https?|ftp):\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&\/=]*$/),
+      .required()
+      .regex(linkRegExp),
   }),
 }), updateAvatar);
 
 router.get('/:id', auth, celebrate({
   [Segments.PARAMS]: Joi.object().keys({
     id: Joi.string()
-      .required()
-      .min(20),
+      .hex()
+      .required(),
   }),
 }), getUserById);
 

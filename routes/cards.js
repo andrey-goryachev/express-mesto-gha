@@ -12,6 +12,7 @@ const {
   addLike,
   removeLike,
 } = require('../controllers/cards');
+const { linkRegExp } = require('../config');
 
 router.get('/', auth, getCards);
 
@@ -19,7 +20,7 @@ router.post('/', auth, celebrate({
   [Segments.BODY]: Joi.object().keys({
     link: Joi.string()
       .required()
-      .regex(/^(https?|ftp):\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_+.~#?&\/=]*$/),
+      .regex(linkRegExp),
     name: Joi.string()
       .required()
       .min(2)
@@ -30,24 +31,24 @@ router.post('/', auth, celebrate({
 router.delete('/:id', auth, celebrate({
   [Segments.PARAMS]: Joi.object().keys({
     id: Joi.string()
-      .required()
-      .min(20),
+      .hex()
+      .required(),
   }),
 }), deleteCard);
 
 router.put('/:cardId/likes', auth, celebrate({
   [Segments.PARAMS]: Joi.object().keys({
     cardId: Joi.string()
-      .required()
-      .min(20),
+      .hex()
+      .required(),
   }),
 }), addLike);
 
 router.delete('/:cardId/likes', auth, celebrate({
   [Segments.PARAMS]: Joi.object().keys({
     cardId: Joi.string()
-      .required()
-      .min(20),
+      .hex()
+      .required(),
   }),
 }), removeLike);
 
