@@ -30,7 +30,7 @@ const deleteCard = (req, res, next) => {
       if (card.owner._id.valueOf() !== req.user._id) {
         throw new NotOwnerEntityError('Вы не владелец карточки');
       }
-      Card.findByIdAndRemove(cardId, { new: true })
+      return card.deleteOne()
         .then((deletedCard) => res.send(deletedCard));
     })
     .catch(next);
