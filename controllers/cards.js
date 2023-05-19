@@ -48,7 +48,7 @@ const addLike = (req, res, next) => {
       }
       res.send({ card });
     })
-    .catch(() => next(new NotFoundError('Карточка не найдена')));
+    .catch(next);
 };
 
 const removeLike = (req, res, next) => {
@@ -63,7 +63,7 @@ const removeLike = (req, res, next) => {
       }
       res.send({ card });
     })
-    .catch(() => next(new NotFoundError('Карточка не найдена')));
+    .catch(next);
 };
 
 module.exports = {

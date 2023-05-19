@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   NotFoundError,
-  NotAuthError,
 } = require('../errors/errors');
 const { secretKey } = require('../config');
 
@@ -28,7 +27,7 @@ const getUserById = (req, res, next) => {
       }
       res.send({ user });
     })
-    .catch(() => next(new NotFoundError('Нет пользователя с таким id')));
+    .catch(next);
 };
 
 const createUser = (req, res, next) => {
@@ -64,7 +63,7 @@ const login = (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, secretKey, { expiresIn: '7d' });
       res.send({ token });
     })
-    .catch(() => next(new NotAuthError('Неверный логин или пароль')));
+    .catch(next);
 };
 
 module.exports = {
