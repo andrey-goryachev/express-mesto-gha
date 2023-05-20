@@ -32,7 +32,9 @@ router.delete('/:id', auth, celebrate({
   [Segments.PARAMS]: Joi.object().keys({
     id: Joi.string()
       .hex()
-      .required(),
+      .required()
+      .min(24)
+      .max(24),
   }),
 }), deleteCard);
 
@@ -40,7 +42,9 @@ router.put('/:cardId/likes', auth, celebrate({
   [Segments.PARAMS]: Joi.object().keys({
     cardId: Joi.string()
       .hex()
-      .required(),
+      .required()
+      .min(24)
+      .max(24),
   }),
 }), addLike);
 

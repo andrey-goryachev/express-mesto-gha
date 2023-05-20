@@ -37,7 +37,9 @@ router.get('/:id', auth, celebrate({
   [Segments.PARAMS]: Joi.object().keys({
     id: Joi.string()
       .hex()
-      .required(),
+      .required()
+      .min(24)
+      .max(24),
   }),
 }), getUserById);
 
